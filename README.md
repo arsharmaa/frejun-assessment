@@ -41,7 +41,7 @@ docker build -t railway-reservation-api .
 ```
 #### Run the Docker Container
 ```sh
-docker build -t railway-reservation-api .
+docker run -p 3000:3000 railway-reservation-api
 ```
 #### Verify the API
 Ensure the API is running and accessible at http://localhost:3000
