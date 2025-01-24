@@ -159,3 +159,83 @@ Languages: JavaScript (Node.js) or Python
 Database: Relational Database (PostgreSQL, MySQL, SQLite)
 ## Conclusion
 This README provides all the necessary details to set up, run, and test the Railway Reservation API. For further details, refer to the additional documentation included in the repository.
+
+## Logic Cases Handled:
+#### Booking a Confirmed Ticket:
+
+#### Scenario: Booking a ticket when there are available confirmed berths.
+
+#### Logic: Allocate an available confirmed berth to the passenger.
+
+## Booking a RAC Ticket:
+
+#### Scenario: Booking a ticket when all confirmed berths are occupied but RAC berths are available.
+
+#### Logic: Allocate an available RAC berth to the passenger.
+
+## Booking a Waiting List Ticket:
+
+#### Scenario: Booking a ticket when all confirmed berths and RAC berths are occupied.
+
+#### Logic: Add the passenger to the waiting list.
+
+## Booking for a Child Under 5 Years Old:
+
+#### Scenario: Booking a ticket for a child under 5 years old.
+
+#### Logic: Only passenger details are stored, no berth allocation.
+
+## Cancellation of a Confirmed Ticket:
+
+#### Scenario: Cancelling a confirmed ticket.
+
+#### Logic: Free up the confirmed berth, promote the first RAC ticket to a confirmed berth, and promote the first waiting list ticket to RAC.
+
+## Cancellation of a RAC Ticket:
+
+#### Scenario: Cancelling a RAC ticket.
+
+#### Logic: Free up the RAC slot, promote the first waiting list ticket to RAC.
+
+## Promotion from RAC to Confirmed:
+
+#### Scenario: Promoting a RAC ticket to confirmed when a confirmed berth becomes available.
+
+#### Logic: Allocate the freed confirmed berth to the first RAC ticket.
+
+## Promotion from Waiting List to RAC:
+
+#### Scenario: Promoting a waiting list ticket to RAC when a RAC berth becomes available.
+
+#### Logic: Allocate the freed RAC berth to the first waiting list ticket.
+
+## Handling Elderly and Lady with Child:
+
+#### Scenario: Booking a ticket for an elderly passenger or a lady with a child.
+
+#### Logic: Prioritize allocation of a lower berth for elderly passengers and ladies with children.
+
+## Concurrency Handling:
+
+#### Scenario: Ensuring two users cannot book the same ticket/berth at the same time.
+
+#### Logic: Use transactions and row-level locking to handle concurrent booking and cancellations.
+
+## Summary of Scenarios:
+#### Confirmed Berth Available: Allocate confirmed berth to the passenger.
+
+#### No Confirmed Berth, RAC Available: Allocate RAC berth to the passenger.
+
+#### No Confirmed or RAC Berth, Waiting List Available: Add passenger to the waiting list.
+
+#### Child Under 5 Years Old: Store passenger details without berth allocation.
+
+#### Cancellation of Confirmed Ticket: Promote RAC to confirmed, waiting list to RAC.
+
+#### Cancellation of RAC Ticket: Promote waiting list to RAC.
+
+#### Promotion of RAC to Confirmed: Allocate freed confirmed berth to RAC.
+
+#### Promotion of Waiting List to RAC: Allocate freed RAC berth to waiting list.
+
+#### Elderly and Lady with Child Priority: Allocate lower berth if available.
