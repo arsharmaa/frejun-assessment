@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   Passenger.associate = function (models) {
-    Passenger.hasOne(models.Ticket, { foreignKey: 'passengerId' });
+    Passenger.hasMany(models.Ticket, { foreignKey: 'passengerId' });
   };
 
   return Passenger;

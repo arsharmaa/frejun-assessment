@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const { sequelize, Passenger, Ticket, Berth, WaitingList } = require('../models');
+
 async function bookTicket(req, res) {
     const { name, age, gender, isLadyWithChild } = req.body;
 
@@ -14,8 +15,26 @@ async function bookTicket(req, res) {
                 { transaction: t }
             );
 
+            if (age < 5) {
+                return res.status(200).json({
+                    message: 'Passenger added successfully without berth allocation',
+                    passenger: {
+                        id: passenger.id,
+                        name: passenger.name,
+                        age: passenger.age,
+                        gender: passenger.gender,
+                        isChild: passenger.isChild,
+                        isLadyWithChild: passenger.isLadyWithChild,
+                        createdAt: passenger.createdAt,
+                        updatedAt: passenger.updatedAt
+                    }
+                });
+            }
+
             let berth = null;
             let status = 'Confirmed';
+
+            // Allocate berths for elderly or lady with child
             if (age >= 60 || isLadyWithChild) {
                 berth = await Berth.findOne({
                     where: { status: 'Available', type: 'Lower' },
@@ -24,6 +43,8 @@ async function bookTicket(req, res) {
                     transaction: t,
                 });
             }
+
+            // General seat allocation
             if (!berth) {
                 berth = await Berth.findOne({
                     where: {
@@ -35,6 +56,8 @@ async function bookTicket(req, res) {
                     transaction: t,
                 });
             }
+
+            // Allocate remaining Lower berths
             if (!berth) {
                 berth = await Berth.findOne({
                     where: { status: 'Available', type: 'Lower' },
@@ -43,6 +66,8 @@ async function bookTicket(req, res) {
                     transaction: t,
                 });
             }
+
+            // Check for RAC (Side-Lower)
             if (!berth) {
                 const racCount = await Ticket.count({ where: { status: 'RAC' }, transaction: t });
                 if (racCount < 18) {
@@ -57,6 +82,8 @@ async function bookTicket(req, res) {
                     status = 'Waiting';
                 }
             }
+
+            // Handle Waiting List
             if (!berth && status === 'Waiting') {
                 const waitingCount = await WaitingList.count({ transaction: t });
                 if (waitingCount >= 10) {
@@ -182,9 +209,14 @@ async function cancelTicket(req, res) {
 
 async function getBookedTickets(req, res) {
     try {
-        const bookedTickets = await Ticket.findAll({
-            where: { status: 'Confirmed' },
-            include: [{ model: Passenger }],
+        const bookedTickets = await Passenger.findAll({
+            include: [{
+                model: Ticket,
+                required: false,  // Include passengers without tickets as well
+                where: {
+                    status: { [Op.in]: ['Confirmed', 'RAC'] }
+                },
+            }],
         });
 
         res.status(200).json(bookedTickets);
