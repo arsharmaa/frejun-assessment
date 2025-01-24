@@ -1,16 +1,24 @@
 'use strict';
-const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class WaitingList extends Model {
-    static associate(models) {
-      WaitingList.belongsTo(models.Ticket, { foreignKey: 'ticketId' });
+  const WaitingList = sequelize.define('WaitingList', {
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    ticketId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Tickets',
+        key: 'id'
+      }
     }
-  }
-  WaitingList.init({
-    ticketId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'WaitingList',
-  });
+  }, {});
+
+  WaitingList.associate = function (models) {
+    WaitingList.belongsTo(models.Ticket, { foreignKey: 'ticketId' });
+  };
+
   return WaitingList;
 };

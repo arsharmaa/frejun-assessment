@@ -1,25 +1,31 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Passengers', {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable('Berths', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      type: {
         type: Sequelize.STRING
       },
-      age: {
+      status: {
+        type: Sequelize.STRING
+      },
+      seatNumber: {
         type: Sequelize.INTEGER
       },
-      gender: {
-        type: Sequelize.STRING
-      },
-      isChild: {
-        type: Sequelize.BOOLEAN
+      ticketId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Tickets',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,
@@ -31,7 +37,7 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Passengers');
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('Berths');
   }
 };

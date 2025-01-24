@@ -15,6 +15,9 @@ module.exports = {
       berthType: {
         type: Sequelize.STRING
       },
+      seatNumber: {
+        type: Sequelize.INTEGER
+      },
       passengerId: {
         type: Sequelize.INTEGER,
         references: {

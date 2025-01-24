@@ -1,18 +1,35 @@
 'use strict';
-const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Berth extends Model {
-    static associate(models) {
-      Berth.belongsTo(models.Ticket, { foreignKey: 'ticketId' });
+  const Berth = sequelize.define('Berth', {
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    type: {
+      type: DataTypes.STRING
+    },
+    status: {
+      type: DataTypes.STRING
+    },
+    seatNumber: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true
+    },
+    ticketId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Tickets',
+        key: 'id'
+      }
     }
-  }
-  Berth.init({
-    type: DataTypes.STRING,
-    status: DataTypes.STRING,
-    ticketId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Berth',
-  });
+  }, {});
+
+  Berth.associate = function (models) {
+    Berth.belongsTo(models.Ticket, { foreignKey: 'ticketId' });
+  };
+
   return Berth;
 };
