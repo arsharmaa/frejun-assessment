@@ -27,7 +27,7 @@ async function initializeApp() {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on https://reservation-api-962i.onrender.com/`);
     await initializeApp();
 });
 const options = {
@@ -37,6 +37,12 @@ const options = {
             title: 'Railway Reservation API',
             version: '1.0.0',
         },
+        servers: [
+            {
+                url: 'https://reservation-api-962i.onrender.com',
+                description: 'Deployed API Server'
+            },
+        ],
     },
     apis: ['./routes/*.js'],
 };
